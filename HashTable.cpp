@@ -20,17 +20,19 @@ public:
     bool isAvailable(int pos);
     bool contains(const string &s);
     bool contains(const char *s);
-    virtual bool add(const string &s);
+    /*virtual bool add(const string &s);
     virtual bool add(const char *s);
     virtual bool remove(const string &s);
-    virtual bool remove(const char *s);
+    virtual bool remove(const char *s);*/
     void print();
 
-    virtual bool operator << (string str);
-    virtual bool operator >> (string str);
+    /*virtual bool operator << (string str);
+    virtual bool operator >> (string str);*/
     HashTable operator+(HashTable &t);
     HashTable &operator+=(HashTable &t);
     HashTable &operator=(const HashTable &t);
+
+		~HashTable();
 
 };
 
@@ -47,6 +49,24 @@ public:
 
     return sum;
   }
+
+//Constructor for the class with size as input(default size = 8)
+  HashTable::HashTable(int size) {
+    this->capacity = size; //xwrhtikothta
+    this->size = 0;        //#apothikeumena stoixeia
+
+    table = new string[size]; //static memory alloc
+
+		cout << "HashTable got created!" << endl;
+  }
+
+
+//Destructor
+	HashTable::~HashTable(){
+		delete [] table;
+		cout << "HashTable got deleted!" << endl;
+	}
+
 
   int main(){
     //int test1 = HashTable::getHashCode("apple");
