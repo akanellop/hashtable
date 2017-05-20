@@ -16,9 +16,9 @@ public:
 	HashTable(const HashTable &ht); //done
 	int getSize(); //done & works
 	int getCapacity(); // done & works
-	bool isEmpty(int pos);
-	bool isTomb(int pos);
-	bool isAvailable(int pos);
+	bool isEmpty(int pos);//done
+	bool isTomb(int pos);//done
+	bool isAvailable(int pos);//done
 	bool contains(const string &s);
 	bool contains(const char *s);
 	virtual bool add(const string &s); 	//done & works
@@ -55,7 +55,6 @@ int HashTable::getHashCode(const char *str) {
 	for (int i=0; i <len; i++) {
 		sum += (int)str[i];
 	}
-
 	return sum;
 }
 int HashTable::getHashCode(const string &s) { //string version
@@ -106,29 +105,50 @@ int HashTable::getSize(){
 If it's there, it returns false, otherwise..true.
 Help Function:"searchTableFor"
 */
-bool HashTable::add(const string &s){ //cornercase:de douleuei gia lekseis me to idio akrivws hashCode opws anagrammatismous px. an xreiastei,tha prepei na ginei neo if sti searchTableFor
-	//search if already there
+bool HashTable::add(const string &s){ 
+    cout<<endl;
+	cout << endl << "Word is = " << s <<endl;
+    //checks if word is in table
 	int index = HashTable::searchTableFor(s);
-	if (index == -1 ) {//if not, insert and return true
+	
+    //will procceed to insertion if the string does not already exists in table
+    if (index == -1 ) {
 		int hashCode =  HashTable::getHashCode(s);
-		cout << endl << "Word is = " << s <<endl;
-		//cout << "hashcode = " << hashCode <<endl;
-		//cout << "capacity = " << capacity <<endl;
+        //index:where to start searching in table, based on hashcode
 		index = hashCode % capacity;
 		//cout<< "index is :  " << index <<endl;
-		size++;
-		table[index].assign(s);
-		//cout << " returning from add" <<endl <<endl;;
-		cout <<endl;
-		return true;
+		
+        //if the pos-index is available proceed
+        if(isAvailable(index)== true){
+            table[index].assign(s);
+            size++;
+            print();
+            return true;
+        }
+        //else continue searching the table for available positions
+        else{
+            int iter=index;
+            do{
+                iter = (iter + 1) % capacity;
+                if(isAvailable(iter) == true){
+                    table[iter].assign(s);
+                    size++;
+                    print();
+		            return true;
+                }
+            }while(iter!=index);  
+        }
 	}
-
-	cout <<"already there" <<endl;
-	//if already there, return false
+    
+    //if the word is already there or the array is full , return false
+	cout <<s <<" :already there or table already full" <<endl;
+    cout<<endl;
+	//print();
 	return false;
 
 }
-bool HashTable::add(const char *s){ //pointer to char version
+//pointer to char version
+bool HashTable::add(const char *s){ 
 	string str(s);
 	return HashTable::add(str);
 
@@ -139,19 +159,23 @@ If it's there, it returns the index.
 Otherwise, it returns -1(error)
 Help Function: "isNull"
 */
+
 int HashTable::searchTableFor(const char *str){
 	int hashCode = HashTable::getHashCode(str);
 	int startPosition = hashCode % capacity;
 	int i = startPosition;
-	//cout <<"size is " <<size <<endl;
-
-	do {
-		if ( HashTable::isNull(i) ){
+    
+	do { 
+        //checks is there is an item with same hascode in table[index],
+        // if there is not were free to write
+		if ( HashTable::isAvailable(i) ){
 			return -1;
 		}
-		if (table[i].compare(str) == 0) { //checkarw string
+        //if there is one we check if it is our current string
+		if (table[i].compare(str) == 0) { 
 			return i;
 		}
+        //if the position is occupied but not from the current sting we keep searching
 		else {
 			i = (i + 1) % capacity;
 		}
@@ -159,14 +183,13 @@ int HashTable::searchTableFor(const char *str){
 
 	return -1;
 }
-
-int HashTable::searchTableFor(const string &s) { //pointer to char version
+//pointer to char version
+int HashTable::searchTableFor(const string &s) { 
 	const char *str = s.c_str();
 	return HashTable::searchTableFor(str);
 }
-
-//isNull searches table[i] and returns true if the item there is null
-bool HashTable::isNull(int i){
+//isEmpty searches table[i] and returns true if the item there is null
+bool HashTable::isEmpty(int i){
 	if ( table[i].empty() ){
 		return true;
 	}
@@ -174,8 +197,24 @@ bool HashTable::isNull(int i){
 		return false;
 	}
 }
-
-
+//isTomb checks if table[i] is a removed item
+bool HashTable::isTomb(int pos){
+    if (table[pos].compare("##tomb##") == 0) { //checkarw string
+			return true;
+	}
+    else{
+        return false;
+    }
+};
+//isAvailable checks if table[i] can be written
+bool HashTable::isAvailable(int pos){
+    if ((isEmpty(pos)==true )||(isTomb(pos)==true)) { //checkarw string
+			return true;
+	}
+    else{
+        return false;
+    }
+};
 //"print" prints the HashTable
 void HashTable::print(){
 	for( int i = 0 ; i < capacity; i++){
@@ -187,17 +226,29 @@ void HashTable::print(){
 
 
 int main(){
+    //creates HashTable of given size
+    HashTable table(6);
+    //inserts few elements
+    table.add("apple");
+    table.add("lollipop");
+    table.add("ppale");
+    //uncomment to print final HashTable
+    //table.print();
+    
+    
+    
+    
 	//int test1 = HashTable::getHashCode("apple");
 	//cout << test1 <<endl ;
-	cout << "hello, all good till now " <<endl;
-	HashTable table(6);
-	table.add("apple");
+	//cout << "hello, all good till now " <<endl;
+	table.add("applewew");
+    table.add("applesdfs");
 	table.add("lollipop");
-	//table.add("ppale");
-	//table.add("ehehehe");
-	//
-	//table.add("hm");
-	//table.add("papel");
-	table.print();
+	table.add("ppale");
+    table.add("appel");
+   // table.add("paple");
+    //table.add("lpape");
+	table.add("ehehehe");
+
 
 }
