@@ -149,7 +149,7 @@ int HashTable::searchTableFor(const char *str){
 		if ( HashTable::isNull(i) ){
 			return -1;
 		}
-		if (table[i].compare(str) == 0) {
+		if (table[i].compare(str) == 0) { //checkarw string
 			return i;
 		}
 		else {
