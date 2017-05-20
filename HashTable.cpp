@@ -9,24 +9,24 @@ protected:
 	unsigned int size;
 	unsigned int capacity;
 	string *table;
-	static int getHashCode(const char *str); //done
+	static int getHashCode(const char *str); //done & works
 
 public:
-	HashTable(int size=8); // done
-	HashTable(const HashTable &ht);
-	int getSize();
-	int getCapacity(); // done
+	HashTable(int size=8); // done & works
+	HashTable(const HashTable &ht); //done
+	int getSize(); //done & works
+	int getCapacity(); // done & works
 	bool isEmpty(int pos);
 	bool isTomb(int pos);
 	bool isAvailable(int pos);
 	bool contains(const string &s);
 	bool contains(const char *s);
-	virtual bool add(const string &s); 	//done
-	virtual bool add(const char *s);		//done
+	virtual bool add(const string &s); 	//done & works
+	virtual bool add(const char *s);		//done & works
 
 	/*virtual bool remove(const string &s);
 	virtual bool remove(const char *s);*/
-	void print();
+	void print(); // done & works
 
 	/*virtual bool operator << (string str);
 	virtual bool operator >> (string str);*/
@@ -34,7 +34,7 @@ public:
 	HashTable &operator+=(HashTable &t);
 	HashTable &operator=(const HashTable &t);
 
-	~HashTable();
+	~HashTable(); // done & works
 
 private:
 	int searchTableFor(const char *str);
@@ -58,7 +58,7 @@ int HashTable::getHashCode(const char *str) {
 
 	return sum;
 }
-int HashTable::getHashCode(const string &s) {
+int HashTable::getHashCode(const string &s) { //string version
 	const char *str = s.c_str();
 	return HashTable::getHashCode(str);
 }
@@ -66,23 +66,22 @@ int HashTable::getHashCode(const string &s) {
 //Constructor for the class with size as input(default size = 8)
 HashTable::HashTable(int size) {
 	this->capacity = size; //xwrhtikothta
-	this->size = size;        //#apothikeumena stoixeia
+	this->size = 0;        //#apothikeumena stoixeia
 
-	table = new string[size]; //static memory alloc //(nothrow?)
-	cout << "HashTable got created!" << endl;
+	table = new string[this->capacity]; //static memory alloc //(nothrow?)
+	cout << "HashTable got created!" << endl << endl;
 }
-
 
 //Copy Constructor ##TO-DO : reminder to ask for size!
 HashTable::HashTable(const HashTable &ht){
 	this->capacity = ht.capacity;	//xwrhtikothta
 	this->size = ht.size;					//#apothikeumena stoixeia
-	this->table = new string[ht.size];
+	this->table = new string[ht.capacity];
 
-	for (int i =0 ; i < size-1 ; i++){
+	for (int i =0 ; i < capacity ; i++){
 		this->table[i].assign(ht.table[i]);
 	}
-	cout << "HashTable got created with Copy-Constructor!" << endl;
+	cout << "HashTable got created with Copy-Constructor!" << endl << endl ;
 }
 
 
@@ -97,27 +96,39 @@ int HashTable::getCapacity(){
 	return capacity;
 }
 
+//getSize returns size
+int HashTable::getSize(){
+	return size;
+}
+
 /*
 "add" adds a string into the table.
 If it's there, it returns false, otherwise..true.
 Help Function:"searchTableFor"
 */
-bool HashTable::add(const string &s){
+bool HashTable::add(const string &s){ //cornercase:de douleuei gia lekseis me to idio akrivws hashCode opws anagrammatismous px. an xreiastei,tha prepei na ginei neo if sti searchTableFor
 	//search if already there
 	int index = HashTable::searchTableFor(s);
 	if (index == -1 ) {//if not, insert and return true
 		int hashCode =  HashTable::getHashCode(s);
-		index = hashCode % size;
+		cout << endl << "Word is = " << s <<endl;
+		//cout << "hashcode = " << hashCode <<endl;
+		//cout << "capacity = " << capacity <<endl;
+		index = hashCode % capacity;
+		//cout<< "index is :  " << index <<endl;
+		size++;
 		table[index].assign(s);
+		//cout << " returning from add" <<endl <<endl;;
+		cout <<endl;
 		return true;
 	}
 
+	cout <<"already there" <<endl;
 	//if already there, return false
 	return false;
 
 }
-
-bool HashTable::add(const char *s){
+bool HashTable::add(const char *s){ //pointer to char version
 	string str(s);
 	return HashTable::add(str);
 
@@ -130,8 +141,9 @@ Help Function: "isNull"
 */
 int HashTable::searchTableFor(const char *str){
 	int hashCode = HashTable::getHashCode(str);
-	int startPosition = hashCode % size;
+	int startPosition = hashCode % capacity;
 	int i = startPosition;
+	//cout <<"size is " <<size <<endl;
 
 	do {
 		if ( HashTable::isNull(i) ){
@@ -141,14 +153,14 @@ int HashTable::searchTableFor(const char *str){
 			return i;
 		}
 		else {
-			i = (i + 1) % size;
+			i = (i + 1) % capacity;
 		}
 	} while (i != startPosition);
 
 	return -1;
 }
 
-int HashTable::searchTableFor(const string &s) {
+int HashTable::searchTableFor(const string &s) { //pointer to char version
 	const char *str = s.c_str();
 	return HashTable::searchTableFor(str);
 }
@@ -164,10 +176,28 @@ bool HashTable::isNull(int i){
 }
 
 
+//"print" prints the HashTable
+void HashTable::print(){
+	for( int i = 0 ; i < capacity; i++){
+		cout << "position " << i << " -> " << table[i] << endl;
+	}
+	cout << "capacity : " << capacity << " size : " << size  << endl;
+
+}
+
+
 int main(){
 	//int test1 = HashTable::getHashCode("apple");
 	//cout << test1 <<endl ;
 	cout << "hello, all good till now " <<endl;
-
+	HashTable table(6);
+	table.add("apple");
+	table.add("lollipop");
+	//table.add("ppale");
+	//table.add("ehehehe");
+	//
+	//table.add("hm");
+	//table.add("papel");
+	table.print();
 
 }
