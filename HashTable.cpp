@@ -26,12 +26,12 @@ public:
 	virtual bool remove(const string &s); //done
 	virtual bool remove(const char *s); //done
 	void print(); // done & works
-
-	virtual bool operator << (string str);
-	virtual bool operator >> (string str);
-	HashTable operator+(HashTable &t);
-	HashTable &operator+=(HashTable &t);
-	HashTable &operator=(const HashTable &t);
+    
+	virtual bool operator << (string str); //done
+    virtual bool operator >> (string str); //done
+	HashTable operator+(HashTable &t);//done
+	HashTable &operator+=(HashTable &t);//done
+	HashTable &operator=(const HashTable &t);//done
 
 	~HashTable(); // done & works
 
@@ -55,7 +55,6 @@ int HashTable::getHashCode(const string &s) { //string version
 	const char *str = s.c_str();
 	return HashTable::getHashCode(str);
 }
-
 //Constructor for the class with size as input(default size = 8)
 HashTable::HashTable(int size) {
 	this->capacity = size; //xwrhtikothta
@@ -64,7 +63,6 @@ HashTable::HashTable(int size) {
 	table = new string[this->capacity]; //static memory alloc //(nothrow?)
 	cout << "HashTable got created!" << endl << endl;
 }
-
 //Copy Constructor ##TO-DO : reminder to ask for size!
 HashTable::HashTable(const HashTable &ht){
 	this->capacity = ht.capacity;	//xwrhtikothta
@@ -76,7 +74,6 @@ HashTable::HashTable(const HashTable &ht){
 	}
 	cout << "HashTable got created with Copy-Constructor!" << endl << endl ;
 }
-
 //Destructor
 HashTable::~HashTable(){
 	delete [] table;
@@ -113,7 +110,7 @@ bool HashTable::add(const string &s){
         if(isAvailable(index)== true){
             table[index].assign(s);
             size++;
-            print();
+            //print();
             return true;
         }
         //else continue searching the table for available positions
@@ -124,7 +121,7 @@ bool HashTable::add(const string &s){
                 if(isAvailable(iter) == true){
                     table[iter].assign(s);
                     size++;
-                    print();
+                  //  print();
 		            return true;
                 }
             }while(iter!=index);  
@@ -144,7 +141,6 @@ bool HashTable::add(const char *s){
 	return HashTable::add(str);
 
 }
-
 /*bool remove is to delete a string from the table if it exists there*/
 bool HashTable::remove(const string &s){ 
     cout<<endl;
@@ -189,14 +185,12 @@ bool HashTable::remove(const char *s){
 
 }
 
-
 /*
 contains searches the hashtable to find the given string.
 If it's there, it returns the index.
 Otherwise, it returns -1(error)
 Help Function: "isNull"
 */
-
 bool HashTable::contains(const char *str){
 	int hashCode = HashTable::getHashCode(str);
 	int startPosition = hashCode % capacity;
@@ -260,28 +254,82 @@ void HashTable::print(){
 	cout << "capacity : " << capacity << " size : " << size  << endl;
 
 }
-
-
+//operator's << use for hashtable
+bool HashTable::operator<<(string s){
+    string str(s);
+	return HashTable::add(str);
+}
+//operator's >> use for hashtable
+bool HashTable::operator>>(string s){
+    string str(s);
+	return HashTable::remove(str);
+}
+//operator's + use for 2 hashtables
+HashTable HashTable::operator+(HashTable &t){
+    //create new object anf initialize it with both tables 
+    int totCap = this->capacity + t.capacity;
+    HashTable newHash(totCap);
+    cout<<newHash.size<<endl;
+    
+    //puts in all the elements that are available eg. not the "##tomb## string
+    for (int i=0;i<this->capacity;i=i+1){
+        if(!(this->isAvailable(i))){
+            newHash.add(this->table[i]);
+        }
+    }
+    for (int i=0;i<t.capacity;i=i+1){
+        if(!(t.isAvailable(i))){
+            newHash.add(t.table[i]);
+        }
+    }
+    return newHash;
+}
+//operator's += use for 2 hashtables, puts the new total in the first object
+HashTable &HashTable::operator+=(HashTable &t){
+    //uses others operators (= , +)
+    *this = *this+t;
+}
+//copies a hashtable into an existing one
+HashTable &HashTable::operator=(const HashTable &t){
+   //checks for the new size of the table array
+    if(this->capacity!=t.capacity){
+        delete [] this->table;
+        this->table = new string[t.capacity];
+    }
+    
+    this->size=t.size;
+    this->capacity=t.capacity;
+    //copies strings
+    for(int i=0;i<capacity;i=i+1){
+        this->table[i]=t.table[i];
+    }
+}
+    
 int main(){
     //creates HashTable of given size
-    HashTable table(6);
+    HashTable t1(6);
     //inserts few elements
-    table.add("apple");
-    table.add("lollipop");
-    table.add("ppale");
+    t1.add("apple");
+    t1.add("lollipop");
+    t1.add("ppale");
     //uncomment to print final HashTable
     //table.print();
     
 	//int test1 = HashTable::getHashCode("apple");
 	//cout << test1 <<endl ;
 	//cout << "hello, all good till now " <<endl;
-	/*table.add("applewew");
-    table.add("applesdfs");
-	table.add("lollipop");
+	HashTable t2(3);
+	t2.add("applewew");
+    t2.add("applesdfs");
+	/*table.add("lollipop");
 	table.add("ppale");
     table.add("appel");
-    table.remove("lollipop");
-	table.add("ehehehe");
+    table>>("lollipop");
+	table << "heeheh";
 */
-
+    t2<<"dsda";
+    t1.print();
+    t2.print();
+    t2+=t1;
+    t2.print();
 }
