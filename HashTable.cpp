@@ -256,6 +256,7 @@ bool HashTable::isAvailable(int pos){
 
 //"print" prints the HashTable
 void HashTable::print(){
+	cout << endl;
 	for( int i = 0 ; i < capacity; i++){
 		cout << "position " << i << " -> " << table[i] << endl;
 	}
@@ -337,7 +338,19 @@ int main(){
 	cout << t1.getSize() <<endl;
 	t1.add("BB");
 	cout << t1.getSize() <<endl;
+
+	t1.add("C");
 	t1.print();
+
+	HashTable t2(t1);
+	t2.print();
+
+	HashTable t3(t1+t2);
+	//t3 = t1 + t2 ;
+	t3.print();
+	t3.remove("C");
+	t3.print();
+
 /*
 	//cout << "hello, all good till now " <<endl;
 	HashTable t2(3);
