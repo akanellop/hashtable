@@ -162,6 +162,7 @@ bool HashTable::remove(const string &s){
 		//If the string is in the startPosition, remove it.
 		if (table[startPosition].compare(s) == 0) {
 			table[startPosition].assign("##tomb##");
+			size--;
 			return true;
 		}
 		else	{//else continue searching the table for its position
@@ -170,6 +171,7 @@ bool HashTable::remove(const string &s){
 				currentPosition = (currentPosition + 1) % capacity; //next position
 				if(table[startPosition].compare(s) == 0){ //string compare
 					table[startPosition].assign("##tomb##");
+					size--;
 					return true;
 				}
 			}while(currentPosition!=startPosition); //till we start the end
@@ -316,7 +318,7 @@ HashTable &HashTable::operator=(const HashTable &t){
 	this->capacity=t.capacity;
 	//copies strings
 	for(int i=0;i<capacity;i=i+1){
-		this->table[i]=t.table[i]; //works?
+		this->table[i]=t.table[i];
 	}
 }
 
@@ -324,14 +326,19 @@ int main(){
 	//creates HashTable of given size
 	HashTable t1(6);
 	//inserts few elements
-	t1.add("apple");
-	t1.add("lollipop");
-	t1.add("ppale");
-	//uncomment to print final HashTable
-	//table.print();
-
-	//int test1 = HashTable::getHashCode("apple");
-	//cout << test1 <<endl ;
+	t1.add("A");
+	cout << t1.getSize() <<endl;
+	t1.add("B");
+	cout << t1.getSize() <<endl;
+	//t1 <<"C";
+	t1.remove("B");
+	cout << t1.getSize() <<endl;
+	t1.add("BB");
+	cout << t1.getSize() <<endl;
+	t1.add("BB");
+	cout << t1.getSize() <<endl;
+	t1.print();
+/*
 	//cout << "hello, all good till now " <<endl;
 	HashTable t2(3);
 	t2.add("applewew");
@@ -342,9 +349,11 @@ int main(){
 	table>>("lollipop");
 	table << "heeheh";
 	*/
+/*
 	t2<<"dsda";
 	t1.print();
 	t2.print();
 	t2+=t1;
 	t2.print();
+*/
 }
