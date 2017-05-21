@@ -260,42 +260,51 @@ void HashTable::print(){
 	cout << "capacity : " << capacity << " size : " << size  << endl;
 }
 
-//operator's << use for hashtable
+//"add" operator
 bool HashTable::operator<<(string s){
-	string str(s);
+	string str(s); //overkill
 	return HashTable::add(str);
 }
-//operator's >> use for hashtable
+
+//"remove" operator
 bool HashTable::operator>>(string s){
-	string str(s);
+	string str(s); //overkill
 	return HashTable::remove(str);
 }
-//operator's + use for 2 hashtables
-HashTable HashTable::operator+(HashTable &t){
-	//create new object anf initialize it with both tables
-	int totCap = this->capacity + t.capacity;
-	HashTable newHash(totCap);
-	cout<<newHash.size<<endl;
 
-	//puts in all the elements that are available eg. not the "##tomb## string
+//"+" operator for 2 HashTable objects
+HashTable HashTable::operator+(HashTable &t){
+	//create new object and initialize it with both tables
+	int newCapacity = this->capacity + t.capacity;
+	HashTable newHashTable(newCapacity);
+
+	cout<<newHashTable.size<<endl;
+
+	//eg: table3 = table1 + table2
+	//The following code adds all items of table1 to table3
+	//same thing to table 2
 	for (int i=0;i<this->capacity;i=i+1){
-		if(!(this->isAvailable(i))){
-			newHash.add(this->table[i]);
+		if(!(this->isAvailable(i))){ //if there is a key in this pos
+			newHashTable.add(this->table[i]); //insert it in the new one
 		}
 	}
+
 	for (int i=0;i<t.capacity;i=i+1){
-		if(!(t.isAvailable(i))){
-			newHash.add(t.table[i]);
+		if(!(t.isAvailable(i))){		//if there is a key in this pos
+			newHashTable.add(t.table[i]);	//insert it in the new one
 		}
 	}
-	return newHash;
+
+	return newHashTable;
 }
-//operator's += use for 2 hashtables, puts the new total in the first object
+
+//"+=" operator for 2 HashTable objects
 HashTable &HashTable::operator+=(HashTable &t){
 	//uses others operators (= , +)
 	*this = *this+t;
 }
-//copies a hashtable into an existing one
+
+//"=" operator for 2 HashTable objects.It copies a hashtable into an existing one"
 HashTable &HashTable::operator=(const HashTable &t){
 	//checks for the new size of the table array
 	if(this->capacity!=t.capacity){
@@ -307,7 +316,7 @@ HashTable &HashTable::operator=(const HashTable &t){
 	this->capacity=t.capacity;
 	//copies strings
 	for(int i=0;i<capacity;i=i+1){
-		this->table[i]=t.table[i];
+		this->table[i]=t.table[i]; //works?
 	}
 }
 
