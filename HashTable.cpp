@@ -98,7 +98,8 @@ If it's already there, it returns false, otherwise..true.
 Help Function:"contains"
 */
 bool HashTable::add(const string &s){
-	cout << endl;
+	
+    cout << endl;
 	cout << endl << "Word to add  = " << s <<endl;
 	int startPosition;
 	//checks if word is in table
@@ -258,7 +259,9 @@ bool HashTable::isAvailable(int pos){
 void HashTable::print(){
 	cout << endl;
 	for( int i = 0 ; i < capacity; i++){
-		cout << "position " << i << " -> " << table[i] << endl;
+        if(!(isAvailable(i))){
+		    cout << "position " << i << " -> " << table[i] << endl;
+        }
 	}
 	cout << "capacity : " << capacity << " size : " << size  << endl;
 }
@@ -293,9 +296,9 @@ HashTable HashTable::operator+(HashTable &t){
 	}
 
 	for (int i=0;i<t.capacity;i=i+1){
-		if(!(t.isAvailable(i))){		//if there is a key in this pos
+		//if(!(t.isAvailable(i))){		//if there is a key in this pos
 			newHashTable.add(t.table[i]);	//insert it in the new one
-		}
+		//}
 	}
 
 	return newHashTable;
@@ -323,7 +326,7 @@ HashTable &HashTable::operator=(const HashTable &t){
 	}
 }
 
-int main(){
+/*int main(){
 	//creates HashTable of given size
 	HashTable t1(6);
 	//inserts few elements
@@ -369,4 +372,5 @@ int main(){
 	t2+=t1;
 	t2.print();
 */
-}
+    
+//}
