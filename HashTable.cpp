@@ -295,7 +295,7 @@ HashTable HashTable::operator+(HashTable &t){
 		}
 	}
 
-	for (int i=0;i<t.capacity;i=i+1){
+	for (int i=0;i<t.capacity;i=i+1){ //WHY IS THIS COMMENTED?
 		//if(!(t.isAvailable(i))){		//if there is a key in this pos
 			newHashTable.add(t.table[i]);	//insert it in the new one
 		//}
