@@ -98,7 +98,7 @@ If it's already there, it returns false, otherwise..true.
 Help Function:"contains"
 */
 bool HashTable::add(const string &s){
-	
+
     cout << endl;
 	cout << endl << "Word to add  = " << s <<endl;
 	int startPosition;
@@ -372,5 +372,5 @@ HashTable &HashTable::operator=(const HashTable &t){
 	t2+=t1;
 	t2.print();
 */
-    
+
 //}
