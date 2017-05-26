@@ -9,30 +9,45 @@ using namespace std;
 class ExtensibleHashTable: public HashTable {
 private:
     double upper_bound_ratio, lower_bound_ratio;
-  
+
     void rehash();
     void rehash(int newcapacity);
 
 public:
      //Constructors
-    ExtensibleHashTable(double upp_bound_rat=0.5,double low_bound_rat=0.125,int size=8); //done
+    ExtensibleHashTable(double upper_bound_ratio=0.5,double lower_bound_ratio=0.125,int size=8); //done
     ExtensibleHashTable(const ExtensibleHashTable &t); //done
 
   //Just like parents-calls inside rehash()
     bool add(const string &str);
-   /* bool remove(const string &str);
+    bool remove(const string &str);
     bool operator << (string str);
     bool operator >> (string str);
 
     ExtensibleHashTable operator+(const ExtensibleHashTable &t) const;
     ExtensibleHashTable &operator+=(const ExtensibleHashTable &t);
     ExtensibleHashTable &operator=(const ExtensibleHashTable &t);
-*/};
+};
 
 //Constructor
-ExtensibleHashTable::ExtensibleHashTable(double upp_bound_rat,double low_bound_rat,int size) :HashTable(size),upper_bound_ratio(upp_bound_rat),lower_bound_ratio(low_bound_rat){
+
+ExtensibleHashTable::ExtensibleHashTable(double upp_bound_ratio,double lower_bound_ratio,int size) :HashTable(size),upper_bound_ratio(upp_bound_ratio),lower_bound_ratio(lower_bound_ratio){
     cout << "New ExtensibleHashTable got created! " <<endl;
 }
+
+
+/* //Second Way - Classic Constructor
+ExtensibleHashTable::ExtensibleHashTable(double upper_bound_ratio,double lower_bound_ratio,int size) {
+    //HashTable(size);
+    this->capacity = size; //xwrhtikothta
+    this->size = 0;        //#apothikeumena stoixeia
+
+    this->table = new string[this->capacity]; //static memory alloc //(nothrow?)
+    this->upper_bound_ratio = upper_bound_ratio;
+    this->lower_bound_ratio = lower_bound_ratio;
+}
+*/
+
 
 //Copy Constructor
 ExtensibleHashTable::ExtensibleHashTable(const ExtensibleHashTable &t) {
@@ -48,53 +63,52 @@ ExtensibleHashTable::ExtensibleHashTable(const ExtensibleHashTable &t) {
 
 //rehashing method
 void ExtensibleHashTable::rehash(){
-   
+
     double boundRatio = size / capacity;
-    //holding on the old elements
-    //
-    //// ena ena kai oxi antikeimeno gt den evlepe ta protected pedia toy mias kai itan diaforetiko antikeimeno
-    int oldc=capacity;
-    string *oldt;
-    oldt = new string[oldc];
-    for (int i = 0;i <oldc;i++){
-        oldt[i] = table[i];
+
+    //Hold all the elements of the old HashTable
+    int oldCapacity=capacity;
+    string *oldTable;
+    oldTable = new string[oldCapacity];
+    for (int i = 0;i <oldCapacity;i++){
+        oldTable[i] = table[i];
     }
-    
-    if( boundRatio > upper_bound_ratio){
+
+    if ( boundRatio > upper_bound_ratio){
         //2x table, inserts elements again
-        
+
         //"construct" new one
         int newCapacity = 2 * capacity;
         capacity=newCapacity;
         size=0;
         delete [] table; //delete memory allocated by our *current* table pointer
         table = new string[capacity]; //new memory allocation for our *current* table pointer
-        
+
         //start filling new hashtable
         string word;
         int startPosition;
         //This code is similar to HashTable::add . Go check that one.
         //for each word in our *old* table, assign it to our new bigger one
-        for (int i = 0 ; i < oldc ; i++) {
-            word = oldt[i];
-            if( !word.empty() && !word.compare("") && !word.compare("##tomb##") ){
+        for (int i = 0 ; i < oldCapacity ; i++) {
+            word = oldTable[i];
+            if( !word.empty() && !word.compare("") && !word.compare("##tomb##") ) { //replace with isAvailable (?)
                 HashTable::add(word);
             }
         }
     }
     else{
-        int newCapacity =capacity/2;
+        int newCapacity = capacity/2;
         capacity=newCapacity;
         size=0;
         delete [] table; //delete memory allocated by our *current* table pointer
         table = new string[capacity]; //new memory allocation for our *current* table pointer
-        
-        //start filling new hashtable
+
+        //start filling our new hashtable
         string word;
-                //for each word in our *old* table, assign it to our new bigger one
-        for (int i = 0 ; i < oldc ; i++) {
-            word = oldt[i];
-            if( !word.empty() && !word.compare("") && !word.compare("##tomb##") ){
+        //for each word in our *old* table, assign it to our new bigger one
+        for (int i = 0 ; i < oldCapacity ; i++) {
+            word = oldTable[i];
+            if( !word.empty() && !word.compare("") && !word.compare("##tomb##") ) {//replace with isAvailable(?)
                 HashTable::add(word);
             }
         }
@@ -106,19 +120,97 @@ void ExtensibleHashTable::rehash(int newcapacity){
 
 //nomizeis mono ayto prepei na kanoyme ?
 //rehash kai add sketo?
-//episis checkare ayto poy exo sto comment me to size 
-//prepei na do an tha ginei rehash me to neo stoixeio hh prpei na kano rehash prin apodekto to neo stoixeio?
+
+//Nai.
+//-Lefteris.
+
+//"add" adds a string into the HashTable
 bool ExtensibleHashTable::add(const string &str){
     //check what should happen before putting the the string
-    //size=size+1;
-    rehash();
-    //size=size-1;
+    cout << getSize() <<endl;
+    size++;
+    cout << getSize() <<endl;
+    //this->size = size+1;
+    ExtensibleHashTable::rehash();
+    size--;//function "add" will increment the size finally.
     HashTable::add(str);
-} // tha ginoun kai oles oi ipoloipes etsi ?
+}
+
+//"remove" removes a string from  the HashTable
+bool ExtensibleHashTable::remove(const string &str){
+    //this->size = size + 1;
+    size--;
+    ExtensibleHashTable::rehash();
+    size++;//function "remove" will decrease the size finally.
+    HashTable::remove(str);
+}
+
+//"add" operator for 1 ExtensibleHashTable object
+bool ExtensibleHashTable::operator<<(string str){
+	return ExtensibleHashTable::add(str);
+}
+
+//"remove" operator for 1 ExtensibleHashTable object
+bool ExtensibleHashTable::operator>>(string str){
+    return ExtensibleHashTable::remove(str);
+}
+
+ExtensibleHashTable ExtensibleHashTable::operator+(const ExtensibleHashTable &t) const{
+//rehash here or bottom? Or maybe it's no needed because add will do it anyways
+    double sth1;
+    double sth2;
+
+  int newCapacity = this->capacity + t.capacity;
+  ExtensibleHashTable newExtensiveHashTable( sth1,sth2, newCapacity);//hope this gets compiled
+  for (int i=0;i<this->capacity;i=i+1){
+    if(!(newExtensiveHashTable.isAvailable(i))){ //if there is a key in this pos
+      newExtensiveHashTable.add(this->table[i]); //insert it in the new one
+    }
+  }
+  for (int i=0;i<t.capacity;i=i+1){
+    //if(!(t.isAvailable(i))){		//if there is a key in this pos
+      newExtensiveHashTable.add(t.table[i]);	//insert it in the new one
+    //}
+  }
+//rehash here or top?? Or maybe it's no needed because add will do it anyways
+  return newExtensiveHashTable;
+}
+
+
+ExtensibleHashTable &ExtensibleHashTable::operator+=(const ExtensibleHashTable &t){
+//uses others operators (= , +)
+    *this = *this+t;
+}
+
+ExtensibleHashTable &ExtensibleHashTable::operator=(const ExtensibleHashTable &t){
+    //checks for the new size of the table array
+
+    //rehash?
+	if(this->capacity!=t.capacity){
+		delete [] this->table;
+		this->table = new string[t.capacity];
+	}
+
+	this->size=t.size;
+	this->capacity=t.capacity;
+	//copies strings
+	for(int i=0;i<capacity;i=i+1){
+		this->table[i]=t.table[i];
+	}
+    this->upper_bound_ratio = t.upper_bound_ratio;
+    this->lower_bound_ratio = t.lower_bound_ratio;
+    //rehash?
+}
+
 
 int main(){
-    ExtensibleHashTable e1(10);
+    ExtensibleHashTable e1(10,10,10);
     e1.add("katerina");
-    ExtensibleHashTable e2(e1);
+    ExtensibleHashTable e2(10,10,14);
+    //how to call contructor with pre-defined values for first parameters?
+    //e2.add("nig");
+    ExtensibleHashTable e3;
     e2.print();
+//    e2+=e1;
+    //e2+=e1;
 }
