@@ -62,7 +62,6 @@ HashTable::HashTable(int size) {
 	this->size = 0;        //#apothikeumena stoixeia
 
 	table = new string[this->capacity]; //static memory alloc //(nothrow?)
-	cout << "HashTable got created!" << endl << endl;
 }
 //Copy Constructor ##TO-DO : reminder to ask for size!
 HashTable::HashTable(const HashTable &ht){
@@ -73,13 +72,11 @@ HashTable::HashTable(const HashTable &ht){
 	for (int i =0 ; i < capacity ; i++){
 		this->table[i].assign(ht.table[i]);
 	}
-	cout << "HashTable got created with Copy-Constructor!" << endl << endl ;
 }
 
 //Destructor
 HashTable::~HashTable(){
 	delete [] table;
-	cout << "HashTable got deleted!" << endl;
 }
 
 //getCapacity returns capacity
@@ -91,16 +88,12 @@ int HashTable::getCapacity(){
 int HashTable::getSize(){
 	return size;
 }
-
 /*
 "add" adds a string into the table.
 If it's already there, it returns false, otherwise..true.
 Help Function:"contains"
 */
 bool HashTable::add(const string &s){
-
-    cout << endl;
-	cout << endl << "Word to add  = " << s <<endl;
 	int startPosition;
 	//checks if word is in table
 	bool existsAlready = HashTable::contains(s);
@@ -132,11 +125,7 @@ bool HashTable::add(const string &s){
 			}while(currentPosition!=startPosition); //till we reach where we started
 		}
 	}
-
 	//if the word is already there or the array is full , return false
-	cout << s <<" :already there or table already full, sorry" <<endl;
-	cout<<endl;
-	//print();
 	return false;
 }
 //pointer to char version
@@ -149,12 +138,9 @@ bool HashTable::add(const char *s){
 "remove" deletes a string from the hashtable
 */
 bool HashTable::remove(const string &s){
-	cout << endl;
-	cout << endl << "Word to remove = " << s <<endl;
 	int startPosition;
 	//checks if word is in table
 	bool existsAlready = HashTable::contains(s);
-
 	//will procceed to deletion if the string exists in table
 	if (existsAlready == true ) {
 		int hashCode =  HashTable::getHashCode(s);
@@ -170,18 +156,15 @@ bool HashTable::remove(const string &s){
 			int currentPosition=startPosition;
 			do{
 				currentPosition = (currentPosition + 1) % capacity; //next position
-				if(table[startPosition].compare(s) == 0){ //string compare
-					table[startPosition].assign("##tomb##");
+				if(table[currentPosition].compare(s) == 0){ //string compare
+					table[currentPosition].assign("##tomb##");
 					size--;
 					return true;
 				}
 			}while(currentPosition!=startPosition); //till we start the end
 		}
 	}
-
 	//if the word didnt exist in table , return false
-	cout << s <<" did not exist in the table." <<endl;
-	cout<<endl;
 	return false;
 }
 //pointer to char version
@@ -257,7 +240,6 @@ bool HashTable::isAvailable(int pos){
 
 //"print" prints the HashTable
 void HashTable::print(){
-	cout << endl;
 	for( int i = 0 ; i < capacity; i++){
         if(!(isAvailable(i))){
 		    cout << "position " << i << " -> " << table[i] << endl;
@@ -283,9 +265,6 @@ HashTable HashTable::operator+(HashTable &t){
 	//create new object and initialize it with both tables
 	int newCapacity = this->capacity + t.capacity;
 	HashTable newHashTable(newCapacity);
-
-	cout<<newHashTable.size<<endl;
-
 	//eg: table3 = table1 + table2
 	//The following code adds all items of table1 to table3
 	//same thing to table 2
@@ -296,11 +275,10 @@ HashTable HashTable::operator+(HashTable &t){
 	}
 
 	for (int i=0;i<t.capacity;i=i+1){ //WHY IS THIS COMMENTED?
-		//if(!(t.isAvailable(i))){		//if there is a key in this pos
+		if(!(t.isAvailable(i))){		//if there is a key in this pos
 			newHashTable.add(t.table[i]);	//insert it in the new one
-		//}
+		}
 	}
-
 	return newHashTable;
 }
 
@@ -324,53 +302,7 @@ HashTable &HashTable::operator=(const HashTable &t){
 	for(int i=0;i<capacity;i=i+1){
 		this->table[i]=t.table[i];
 	}
+    return *this;
 }
 
-/*int main(){
-	//creates HashTable of given size
-	HashTable t1(6);
-	//inserts few elements
-	t1.add("A");
-	cout << t1.getSize() <<endl;
-	t1.add("B");
-	cout << t1.getSize() <<endl;
-	//t1 <<"C";
-	t1.remove("B");
-	cout << t1.getSize() <<endl;
-	t1.add("BB");
-	cout << t1.getSize() <<endl;
-	t1.add("BB");
-	cout << t1.getSize() <<endl;
-
-	t1.add("C");
-	t1.print();
-
-	HashTable t2(t1);
-	t2.print();
-
-	HashTable t3(t1+t2);
-	//t3 = t1 + t2 ;
-	t3.print();
-	t3.remove("C");
-	t3.print();
-
-/*
-	//cout << "hello, all good till now " <<endl;
-	HashTable t2(3);
-	t2.add("applewew");
-	t2.add("applesdfs");
-	/*table.add("lollipop");
-	table.add("ppale");
-	table.add("appel");
-	table>>("lollipop");
-	table << "heeheh";
-	*/
-/*
-	t2<<"dsda";
-	t1.print();
-	t2.print();
-	t2+=t1;
-	t2.print();
-*/
-
-//}
+//int main(){}
