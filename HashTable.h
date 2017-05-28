@@ -16,22 +16,22 @@ public:
 	HashTable(const HashTable &ht); //done
 	int getSize(); //done & works
 	int getCapacity(); // done & works
-	bool isEmpty(int pos);//done
-	bool isTomb(int pos);//done
-	bool isAvailable(int pos);//done
-	bool contains(const string &s);//done
-	bool contains(const char *s);//done
+	bool isEmpty(int pos);//done & works
+	bool isTomb(int pos);//done & works
+	bool isAvailable(int pos);//done & works
+	bool contains(const string &s);//done & works
+	bool contains(const char *s);//done & works
 	virtual bool add(const string &s); 	//done & works
 	virtual bool add(const char *s);		//done & works
-	virtual bool remove(const string &s); //done
-	virtual bool remove(const char *s); //done
+	virtual bool remove(const string &s); //done & works
+	virtual bool remove(const char *s); //done & works
 	void print(); // done & works
 
-	virtual bool operator << (string str); //done
-	virtual bool operator >> (string str); //done
-	HashTable operator+(HashTable &t);//done
-	HashTable &operator+=(HashTable &t);//done
-	HashTable &operator=(const HashTable &t);//done
+	virtual bool operator << (string str); //done & works
+	virtual bool operator >> (string str); //done & works
+	HashTable operator+(HashTable &t);//done & works
+	HashTable &operator+=(HashTable &t);//done & works
+	HashTable &operator=(const HashTable &t);//done & works
 
 	~HashTable(); // done & works
 
@@ -88,6 +88,7 @@ int HashTable::getCapacity(){
 int HashTable::getSize(){
 	return size;
 }
+
 /*
 "add" adds a string into the table.
 If it's already there, it returns false, otherwise..true.
@@ -104,14 +105,13 @@ bool HashTable::add(const string &s){
 
 		startPosition = hashCode % capacity; //our modulo math type
 
-
 		//if startPosition is available, then assign
 		if(isAvailable(startPosition)== true){
 			table[startPosition].assign(s);
 			size++;
 			//print();
 			return true;
-		}else{ //ifstartPosition not available, then do linear probing
+		}else{ //if startPosition not available, then do linear probing
 			int currentPosition = startPosition;
 
 			do{
@@ -164,6 +164,7 @@ bool HashTable::remove(const string &s){
 			}while(currentPosition!=startPosition); //till we start the end
 		}
 	}
+
 	//if the word didnt exist in table , return false
 	return false;
 }
@@ -241,7 +242,8 @@ bool HashTable::isAvailable(int pos){
 //"print" prints the HashTable
 void HashTable::print(){
 	for( int i = 0 ; i < capacity; i++){
-        if(!(isAvailable(i))){
+
+        if(!(isAvailable(i)) || (isTomb(i)) ){
 		    cout << "position " << i << " -> " << table[i] << endl;
         }
 	}
