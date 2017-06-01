@@ -4,7 +4,7 @@
 
 using namespace std;
 
-#include "HashTable.cpp" //must be in same local folder
+#include "HashTable.h" //must be in same local folder
 
 class ExtensibleHashTable: public HashTable {
 private:
